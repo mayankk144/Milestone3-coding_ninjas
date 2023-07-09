@@ -1,0 +1,371 @@
+//For a given singly linked list of integers, find and return the node present at the middle of the list.
+
+Node *midPoint(Node *head)
+{
+    if(head==NULL){
+		return NULL;
+	}
+	Node* a = head;
+	Node* b = head->next;
+	while(b!=NULL && b->next!=NULL){
+		a = a->next;
+		b = b->next->next;
+	}
+	return a;
+}
+
+//You have been given two sorted(in ascending order) singly linked lists of integers.
+Write a function to merge them in such a way that the resulting singly linked list is also sorted(in ascending order) and return the new head to the list.
+
+Node *mergeTwoSortedLinkedLists(Node *head1, Node *head2)
+{
+    Node* head = NULL;
+	Node* tail = NULL;
+	if(head1==NULL && head2==NULL){
+		return NULL;
+	}
+	else if(head2==NULL){
+		return head1;
+	}
+	else if(head1==NULL){
+		return head2;
+	}
+	while(head1!=NULL && head2!=NULL){
+		if(head==NULL){
+			if(head1->data < head2->data){
+				tail = head1;
+				head = head1;
+				head1 = head1->next;
+			}
+			else{
+				tail = head2;
+				head = head2;
+				head2 = head2->next;
+			}
+		}
+		else{
+			if(head1->data < head2->data){
+				Node* temp = head1;
+				tail->next = temp;
+				tail = tail->next;
+				head1 = head1->next;
+			}
+			else{
+                Node *temp = head2;
+                tail->next = temp;
+                tail = tail->next;
+                head2 = head2->next;
+            }
+		}
+	}
+	if(head1==NULL){
+		tail->next = head2;
+	}
+	else{
+		tail->next = head1;
+	}
+	return head;
+}
+
+// Given a singly linked list of integers, sort it using 'Merge Sort.'
+
+Node* middle(Node* head, Node* tail) {
+        Node* slow = head;
+        Node* fast = head;
+        
+        while(fast!=tail && fast->next!=tail){
+            slow = slow->next;
+            fast = fast->next->next;
+        }
+        Node* afterMiddle = slow->next;
+        slow->next = NULL;
+        return afterMiddle;
+}
+/* merge sort*/
+Node* mergeSort(Node* head){
+    if(head == NULL || head->next == NULL){
+        return head;
+    }
+    Node* tail = head;
+    while(tail->next){
+        tail = tail->next;
+    }
+    Node* afterMiddle = middle(head, tail);
+    Node* part1 = mergeSort(head);
+    Node* part2 = mergeSort(afterMiddle);
+    Node *curr1 = part1, *curr2 = part2;
+    Node *si = NULL, *ei = NULL;
+    while(curr1 && curr2){
+        if(curr1->data <= curr2->data){
+            if(si == NULL){
+                si = curr1;
+                ei = curr1;
+            }else{
+                ei->next = curr1;
+                ei = curr1;
+            }
+            curr1 = curr1->next;
+        }else{
+            if(si == NULL){
+                si = curr2;
+                ei = curr2;
+            }else{
+                ei->next = curr2;
+                ei = curr2;
+            }
+            curr2 = curr2->next;
+        }
+    }
+    while(curr1){
+        ei->next = curr1;
+        ei = curr1;
+        curr1 = curr1->next;
+    }
+    while(curr2){
+        ei->next = curr2;
+        ei = curr2;
+        curr2 = curr2->next;
+    }
+    return si;
+}
+
+//Given a singly linked list of integers, reverse it using recursion and return the head to the modified list. You have to do this in O(N) time complexity where N is the size of the linked list.
+
+Node *reverseLinkedListRec(Node *head)
+{
+    if (head == NULL || head->next == NULL)
+            return head;
+ 
+        /* reverse the rest list and put
+          the first element at the end */
+        Node* rest = reverseLinkedListRec(head->next);
+        head->next->next = head;
+ 
+        /* tricky step -- see the diagram */
+        head->next = NULL;
+ 
+        /* fix the head pointer */
+        return rest;
+}
+
+//Given a singly linked list of integers, reverse it iteratively and return the head to the modified list.
+
+Node *reverseLinkedList(Node *head) {
+    Node* prev = NULL;
+	Node* curr = head;
+	Node* next = NULL;
+	while(curr!=NULL){
+		next = curr->next;
+		curr->next = prev;
+		prev = curr;
+		curr = next;
+	}
+	return prev;
+}
+
+//Given a singly linked list of integers and an integer n, find and return the index for the first occurrence of 'n' in the linked list. -1 otherwise using recursion.
+
+int helper(Node *head, int n, int index){
+	if(head==NULL){
+		return -1;
+	}
+	if(head->data == n){
+		return index;
+	}
+	helper(head->next, n, index+1);
+}
+
+int findNodeRec(Node *head, int n)
+{
+	return helper(head,n,0);
+}
+
+//Given a singly linked list of integers, reverse the nodes of the linked list 'k' at a time and return its modified list.
+ 'k' is a positive integer and is less than or equal to the length of the linked list. If the number of nodes is not a multiple of 'k,' then left-out nodes, in the end, should be reversed as well.
+
+Node *kReverse(Node *head, int k)
+{
+
+    // base case
+	if(k==0){
+		return head;
+	}
+    if (!head)
+        return NULL;
+    
+    Node* current = head;
+    Node* next = NULL;
+    Node* prev = NULL;
+    int count = 0;
+ 
+    /*reverse first k nodes of the linked list */
+    while (current != NULL && count < k) {
+        next = current->next;
+        current->next = prev;
+        prev = current;
+        current = next;
+        count++;
+    }
+ 
+    /* next is now a pointer to (k+1)th node
+    Recursively call for the list starting from current.
+    And make rest of the list as next of first node */
+    if (next != NULL)
+        head->next = kReverse(next, k);
+ 
+    /* prev is new head of the input list */
+    return prev;
+
+}
+
+//Given a singly linked list of integers, sort it using 'Bubble Sort.'
+
+int len(Node* head)
+{
+    Node* temp = head ;
+    int i = 0 ;
+     while(temp!=NULL)
+     {
+         i++;
+         temp=temp->next ;
+     }
+    
+    return i ;
+}
+
+Node *bubbleSort(Node *head)
+{
+	if(head==NULL){
+		return NULL;
+	}
+    int n = len(head)-1;
+  
+   while(n--)
+   {
+    Node* prev =NULL;
+    Node*cur = head;
+    while(cur->next!=NULL)
+    {
+        if(cur->data >=cur->next->data)
+        {
+            
+            if(prev==NULL)
+            {
+                //first node
+                Node* nxt = cur->next ;
+                cur->next = nxt->next ;
+                nxt->next = cur ;
+               prev=nxt ;
+                head = prev ;
+               
+                
+            }
+            
+            else
+            {
+                
+                Node* nxt = cur->next ;
+                prev->next = nxt ;
+                cur->next = nxt->next ;
+                nxt->next = cur ;
+                prev = nxt ;
+                
+            }
+            
+        }
+        else
+        {
+            prev = cur ; 
+            cur=cur->next ;
+           
+        }
+            
+    }
+       
+   }
+   
+    return head ;
+    
+}
+
+//Given a large number represented in the form of a linked list. Write code to increment the number by 1 in-place(i.e. without using extra space).
+
+Node *reverse(Node *head) {
+  Node *prev = NULL;
+  Node *current = head;
+  Node *next;
+  while (current != NULL) {
+    next = current->next;
+    current->next = prev;
+    prev = current;
+    current = next;
+  }
+  return prev;
+}
+
+/* Adds one to a linked lists and return the head
+node of resultant list */
+Node *addOneUtil(Node *head) {
+  // res is head node of the resultant list
+  Node *res = head;
+  Node *temp;
+
+  int carry = 1, sum;
+
+  while (head != NULL) // while both lists exist
+  {
+    // Calculate value of next digit in resultant list.
+    // The next digit is sum of following things
+    // (i) Carry
+    // (ii) Next digit of head list (if there is a
+    // next digit)
+    sum = carry + head->data;
+
+    // update carry for next calculation
+    carry = (sum >= 10) ? 1 : 0;
+
+    // update sum if it is greater than 10
+    sum = sum % 10;
+
+    // Create a new node with sum as data
+    head->data = sum;
+
+    // Move head and second pointers to next nodes
+    temp = head;
+    head = head->next;
+  }
+
+  // if some carry is still there, add a new node to
+  // result list.
+  if (carry > 0)
+    temp->next = new Node(carry);
+
+  // return head of the resultant list
+  return res;
+}
+
+// This function mainly uses addOneUtil().
+Node *NextLargeNumber(Node *head) {
+  // Reverse linked list
+  head = reverse(head);
+
+  // Add one from left to right of reversed
+  // list
+  head = addOneUtil(head);
+
+  // Reverse the modified list
+  return reverse(head);
+}
+
+
+//Given a Singly Linked List of integers, delete all the alternate nodes in the list.
+
+void deleteAlternateNodes(struct Node *head) {
+  struct Node *temp = head, *t;
+  while (temp && temp->next) {
+    t = temp->next;
+    temp->next = t->next;
+    free(t);
+    temp = temp->next;
+  }
+}
